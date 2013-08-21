@@ -1,0 +1,173 @@
+<?php
+
+/**
+* @file
+* A block module that display bib state
+*
+*/
+
+
+/**
+* Implements hook_help.
+*
+* Displays help and module information.
+*
+* @param path
+*   Which path of the site we're using to display help
+* @param arg
+*   Array that holds the current path as returned from arg() function
+*/
+function bibstate_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#bibstate":
+      return '<p>' . t("Displays a block for ultra-simple state of the bib, and one-click toggle.") . '</p>';
+      break;
+  }
+}
+
+
+
+/**
+* Implements hook_block_info().
+*/
+function bibstate_block_info() {
+  $blocks['bibstate'] = array(
+    'info' => t('Bib State'), //The name that will appear in the block list.
+    'cache' => DRUPAL_CACHE_PER_ROLE, //Default
+  );
+  return $blocks;
+}
+
+/**
+* Access control
+*
+* For edit taxo by form, and by external file
+*
+*/
+
+function bibstate_permission(){
+	return array(
+		'see bib state' => array(
+			'title' => t('See bib state')
+		),
+	  'modify bib state' => array(
+			'title' => t('Modify bib state')
+		)
+	);
+
+}
+
+
+
+/**
+* Translate Bool state in real language
+*
+*/
+function bibstate_display($bib_state_bool){
+	switch($bib_state_bool){
+		case TRUE :
+			$return = '<div id="bibicon bibopen"><p>'.t('Open').'</p></div>';
+			break;
+		case FALSE :
+			$return = '<div id="bibicon bibclose"><p>'.t('Closed').'</p></div>';
+			break;
+		case NULL :
+			$return = '<div id="bibnull"><p>'.t('Not Autorized').'</p></div>';
+			break;
+	}
+	$return = $return.'<span>'.t('Last update by').' <em>'.variable_get('bibstate_lastupdate_user', t('Nobody')).'</em><br />'.t('at ').format_date(variable_get('bibstate_lastupdate_time'), 'small').'</span>';
+	return($return);
+}
+
+
+/**
+* Get state, or put initial state
+*
+*/
+
+function bibstate_readstate(){
+//	if(variable_get('bibstate_state', 'init') == 'init'){
+//		variable_set('bibstate_state', 'FALSE');
+//		drupal_set_message(t('Bib state initialized'));
+//	}
+	if(user_access('see bib state')){
+		$bib_state = variable_get('bibstate_state', 'FALSE');
+	}
+	else{
+		$bib_state = NULL;
+	}
+	return(bibstate_display($bib_state));
+}
+
+
+
+/**
+* BibState variable toggle
+*/
+function bibstate_toggle(){
+	if(user_access('modify bib state')){
+		variable_set('bibstate_state', !variable_get('bibstate_state', 'FALSE'));
+		variable_set('bibstate_lastupdate_user', $GLOBALS['user']->name);
+		variable_set('bibstate_lastupdate_time', time());
+		drupal_set_message(t('Bib state toggled !'));
+//		return(bibstate_display(variable_get('bibstate_state')));
+	}
+	else{
+		drupal_set_message(t('Not Autorized'));
+//		return(bibstate_display(NULL));
+	}
+
+}
+
+/**
+* Bibstate toggle form
+*
+*/
+function bibstate_toggle_form($form, &$form_state){
+	$form['bibstate_toggle'] = array(
+		'#title' => t('Bib is actualy'),
+		'#prefix' => '<div id="bibstate">'.bibstate_readstate(),
+		'#suffix' => '</div>',
+		);
+	if(user_access('modify bib state')){
+//		$form['bibstate_toggle']['toggle'] = array(
+//			'#type' => 'hidden',
+//			'#value' => TRUE,
+//		);
+		$form['bibstate_toggle']['button'] = array(
+			'#type' => 'submit',
+			'#value' => t('Toggle'),
+			'#submit' => array('bibstate_toggle_form_submit'),
+/*			'#ajax' => array(
+				'event' => 'submit',
+				'method' => 'replace',
+				'warpper' => 'bibstate',
+				'effect' => 'fade',
+				'callback' => 'bibstate_toggle',
+				), */
+//			'#executes_submit_callback' => TRUE,
+		);
+	}
+	return($form);
+}
+
+
+/**
+* Bibstate form submit
+*
+*/
+function bibstate_toggle_form_submit($form, &$form_state){
+	bibstate_toggle();
+}
+
+/**
+* Display block
+*
+*/
+function bibstate_block_view(){
+	$block['title'] = t('Bib is actualy');
+//	$block['content'] = '<p>'.bibstate_readstate().'</p>';
+//	$block['content'] = $block['content'].'<p>'.l(t('Toggle'), 'bibstate/toggle').'</p>';
+	$block['content'] = drupal_get_form('bibstate_toggle_form');
+	return($block);
+}

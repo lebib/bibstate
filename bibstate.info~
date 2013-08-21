@@ -1,0 +1,7 @@
+name = Bib State
+description = State of the Bib Hack'space
+tag[] = Custom
+stylesheets[all][] = bibstate.css
+
+core = 7.x
+version = "7.x-0.1"

@@ -1,0 +1,49 @@
+#block-bibstate-bibstate #bibstate div{
+	/*height: 100px;*/
+	/*width: 100px;*/
+	/*margin: auto;*/
+}
+
+#block-bibstate-bibstate  #bibicon{
+}
+
+#block-bibstate-bibstate div p{
+	text-align: center;
+	vertical-align: middle;
+	line-height: 100px; 
+	/*font-size: 200%;*/
+	text-shadow: 0px 0px 2px #FF6600;
+}
+
+#bibopen{
+	width:19px;
+	height:19px;
+	background: transparent url('images/open_closed.png') no-repeat -24px -2px;
+	float: right;
+	margin: 0 0 0 5px;
+}
+
+/*#block-bibstate-bibstate div#bibclose{*/
+#bibclose{
+	width:19px;
+	height:19px;
+	background:transparent  url('images/open_closed.png') no-repeat -2px -2px;
+	float:right;
+	margin: 0 0 0 5px;
+}
+
+.bib-date {
+	font-size:12px;
+}
+
+.bibstatus-status {
+	margin:0 0 3px 5px;
+	font-weight:bold;
+}
+
+.block-bibstate h2{
+	font-size:14px;
+	font-weight:normal;
+	/*float:left;*/
+	/*margin-right: 5px;*/
+}
