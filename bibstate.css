@@ -1,10 +1,9 @@
 #block-bibstate-bibstate #bibstate div{
-	/*height: 100px;*/
-	/*width: 100px;*/
-	/*margin: auto;*/
+
 }
 
 #block-bibstate-bibstate  #bibicon{
+	
 }
 
 #block-bibstate-bibstate div p{
@@ -23,7 +22,6 @@
 	margin: 0 0 0 5px;
 }
 
-/*#block-bibstate-bibstate div#bibclose{*/
 #bibclose{
 	width:19px;
 	height:19px;

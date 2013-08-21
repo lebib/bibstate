@@ -46,14 +46,14 @@ function bibstate_block_info() {
 */
 
 function bibstate_permission(){
-	return array(
-		'see bib state' => array(
-			'title' => t('See bib state')
-		),
-	  'modify bib state' => array(
-			'title' => t('Modify bib state')
-		)
-	);
+  return array(
+    'see bib state' => array(
+      'title' => t('See bib state')
+    ),
+    'modify bib state' => array(
+      'title' => t('Modify bib state')
+    ),
+  );
 
 }
 
@@ -64,19 +64,19 @@ function bibstate_permission(){
 *
 */
 function bibstate_display($bib_state_bool){
-	switch($bib_state_bool){
-		case TRUE :
-			$return = '<div id="bibopen"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Open') . '</div>';
-			break;
-		case FALSE :
-			$return = '<div id="bibclose"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Closed').'</div>';
-			break;
-		case NULL :
-			$return = '<div id="bibnull"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Not Autorized').'</div>';
-			break;
-	}
-	$return = $return.'<div class="bib-date">'.t('Toggled by').' <em>'.variable_get('bibstate_lastupdate_user', t('Nobody')).'</em> | '.format_date(variable_get('bibstate_lastupdate_time'), 'short').'</div>';
-	return($return);
+  switch($bib_state_bool){
+    case TRUE :
+      $return = '<div id="bibopen"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Open') . '</div>';
+      break;
+    case FALSE :
+      $return = '<div id="bibclose"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Closed').'</div>';
+      break;
+    case NULL :
+      $return = '<div id="bibnull"></div><div class="bibstatus-status">' . t('Bib is currently') . ' ' . t('Not Autorized').'</div>';
+      break;
+  }
+  $return = $return . '<div class="bib-date">' . t('Toggled by') . ' <em>' . variable_get('bibstate_lastupdate_user', t('Nobody')) . '</em> | ' . format_date(variable_get('bibstate_lastupdate_time'), 'short') . '</div>';
+  return($return);
 }
 
 
@@ -86,17 +86,13 @@ function bibstate_display($bib_state_bool){
 */
 
 function bibstate_readstate(){
-//	if(variable_get('bibstate_state', 'init') == 'init'){
-//		variable_set('bibstate_state', 'FALSE');
-//		drupal_set_message(t('Bib state initialized'));
-//	}
-	if(user_access('see bib state')){
-		$bib_state = variable_get('bibstate_state', 'FALSE');
-	}
-	else{
-		$bib_state = NULL;
-	}
-	return(bibstate_display($bib_state));
+  if(user_access('see bib state')){
+    $bib_state = variable_get('bibstate_state', 'FALSE');
+  }
+  else{
+    $bib_state = NULL;
+  }
+  return(bibstate_display($bib_state));
 }
 
 
@@ -105,18 +101,15 @@ function bibstate_readstate(){
 * BibState variable toggle
 */
 function bibstate_toggle(){
-	if(user_access('modify bib state')){
-		variable_set('bibstate_state', !variable_get('bibstate_state', 'FALSE'));
-		variable_set('bibstate_lastupdate_user', $GLOBALS['user']->name);
-		variable_set('bibstate_lastupdate_time', time());
-		drupal_set_message(t('Bib state toggled !'));
-//		return(bibstate_display(variable_get('bibstate_state')));
-	}
-	else{
-		drupal_set_message(t('Not Autorized'));
-//		return(bibstate_display(NULL));
-	}
-
+  if(user_access('modify bib state')){
+    variable_set('bibstate_state', !variable_get('bibstate_state', 'FALSE'));
+    variable_set('bibstate_lastupdate_user', $GLOBALS['user']->name);
+    variable_set('bibstate_lastupdate_time', time());
+    drupal_set_message(t('Bib state toggled !'));
+  }
+  else{
+    drupal_set_message(t('Not Autorized'));
+  }
 }
 
 /**
@@ -124,31 +117,26 @@ function bibstate_toggle(){
 *
 */
 function bibstate_toggle_form($form, &$form_state){
-	$form['bibstate_toggle'] = array(
-		'#title' => t('Bib is currently'),
-		'#prefix' => '<div id="bibstate">'.bibstate_readstate(),
-		'#suffix' => '</div>',
-		);
-	if(user_access('modify bib state')){
-//		$form['bibstate_toggle']['toggle'] = array(
-//			'#type' => 'hidden',
-//			'#value' => TRUE,
-//		);
-		$form['bibstate_toggle']['button'] = array(
-			'#type' => 'submit',
-			'#value' => t('Toggle'),
-			'#submit' => array('bibstate_toggle_form_submit'),
-/*			'#ajax' => array(
-				'event' => 'submit',
-				'method' => 'replace',
-				'warpper' => 'bibstate',
-				'effect' => 'fade',
-				'callback' => 'bibstate_toggle',
-				), */
-//			'#executes_submit_callback' => TRUE,
-		);
-	}
-	return($form);
+  $form['bibstate_toggle'] = array(
+    '#title' => t('Bib is currently'),
+    '#prefix' => '<div id="bibstate">'.bibstate_readstate(),
+    '#suffix' => '</div>',
+  );
+  if(user_access('modify bib state')){
+    $form['bibstate_toggle']['button'] = array(
+      '#type' => 'submit',
+      '#value' => t('Toggle'),
+      '#submit' => array('bibstate_toggle_form_submit'),
+/*    '#ajax' => array(
+	'event' => 'submit',
+	'method' => 'replace',
+	'warpper' => 'bibstate',
+	'effect' => 'fade',
+	'callback' => 'bibstate_toggle',
+	), */
+    );
+  }
+  return($form);
 }
 
 
@@ -157,7 +145,7 @@ function bibstate_toggle_form($form, &$form_state){
 *
 */
 function bibstate_toggle_form_submit($form, &$form_state){
-	bibstate_toggle();
+  bibstate_toggle();
 }
 
 /**
@@ -165,10 +153,9 @@ function bibstate_toggle_form_submit($form, &$form_state){
 *
 */
 function bibstate_block_view(){
-  //print_r($block);
-	//$block['title'] = t('Bib is currently');
-//	$block['content'] = '<p>'.bibstate_readstate().'</p>';
-//	$block['content'] = $block['content'].'<p>'.l(t('Toggle'), 'bibstate/toggle').'</p>';
-	$block['content'] = drupal_get_form('bibstate_toggle_form');
-	return($block);
+  //$block['title'] = t('Bib is currently');
+  //$block['content'] = '<p>'.bibstate_readstate().'</p>';
+  //$block['content'] = $block['content'].'<p>'.l(t('Toggle'), 'bibstate/toggle').'</p>';
+  $block['content'] = drupal_get_form('bibstate_toggle_form');
+  return($block);
 }
